@@ -123,7 +123,6 @@ export default function CreateTodo() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-md mx-auto">
-        {/* Header */}
         <div className="flex items-center mb-6">
           <button
             onClick={() => navigate("/todos")}
@@ -137,7 +136,6 @@ export default function CreateTodo() {
           </h1>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
           {errors.submit && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -148,7 +146,6 @@ export default function CreateTodo() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Title <span className="text-red-500">*</span>
@@ -168,7 +165,6 @@ export default function CreateTodo() {
               )}
             </div>
 
-            {/* Description Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
@@ -184,7 +180,6 @@ export default function CreateTodo() {
               />
             </div>
 
-            {/* Status Select */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
@@ -205,13 +200,10 @@ export default function CreateTodo() {
               </select>
             </div>
 
-            {/* Image Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Image <span className="text-red-500">*</span>
               </label>
-
-              {/* Image Upload Area */}
               {!preview ? (
                 <div
                   className={`relative border-2 ${
@@ -275,7 +267,6 @@ export default function CreateTodo() {
               )}
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting}
@@ -295,7 +286,6 @@ export default function CreateTodo() {
               )}
             </button>
 
-            {/* Helper Text */}
             <p className="text-center text-gray-500 text-sm">
               All fields marked with <span className="text-red-500">*</span> are
               required
