@@ -179,7 +179,7 @@ export default function EditTodo() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-8">
         <div className="max-w-lg mx-auto">
           <div className="mb-8 animate-pulse">
             <div className="h-6 w-32 bg-gray-300 rounded mb-6"></div>
@@ -201,7 +201,7 @@ export default function EditTodo() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center mb-8">
           <button
@@ -219,7 +219,7 @@ export default function EditTodo() {
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
@@ -376,7 +376,7 @@ export default function EditTodo() {
                 className={`flex-1 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 ${
                   saving
                     ? "bg-indigo-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
+                    : "bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
                 }`}
               >
                 {saving ? (

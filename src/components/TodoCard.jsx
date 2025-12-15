@@ -13,7 +13,7 @@ export default function TodoCard({ todo, onToggleStatus, onDelete }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
             <ImageIcon className="w-12 h-12 text-gray-400" />
           </div>
         )}
@@ -50,7 +50,7 @@ export default function TodoCard({ todo, onToggleStatus, onDelete }) {
         </h3>
 
         {todo.description && (
-          <p className="text-gray-600 mb-4 line-clamp-2 min-h-[3rem]">
+          <p className="text-gray-600 mb-4 line-clamp-2 min-h-12">
             {todo.description}
           </p>
         )}

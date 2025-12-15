@@ -50,7 +50,7 @@ function ConfirmationModal({
 
   return (
     <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-4"
+      className="fixed inset-0 z-1000 flex items-center justify-center bg-black/40 backdrop-blur-[2px] px-4"
       aria-labelledby="confirm-modal-title"
       role="dialog"
       aria-modal="true"

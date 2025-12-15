@@ -121,7 +121,7 @@ export default function CreateTodo() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-md mx-auto">
         <div className="flex items-center mb-6">
           <button
@@ -273,7 +273,7 @@ export default function CreateTodo() {
               className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
                 isSubmitting
                   ? "bg-indigo-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  : "bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               }`}
             >
               {isSubmitting ? (

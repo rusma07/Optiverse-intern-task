@@ -96,7 +96,7 @@ export default function TodoList() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <ConfirmationModal
         open={Boolean(deleteTodoId)}
         title="Delete todo?"
@@ -126,7 +126,7 @@ export default function TodoList() {
 
           <Link
             to="/todos/create"
-            className="mt-4 sm:mt-0 flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+            className="mt-4 sm:mt-0 flex items-center justify-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
           >
             <Plus className="w-5 h-5" />
             New Todo
