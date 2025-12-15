@@ -25,20 +25,18 @@ export default function EditTodo() {
     title: "",
     description: "",
     status: "pending",
-    image: null, // can be base64 string, or File while editing
+    image: null, 
   });
 
-  const [preview, setPreview] = useState(null); // blob url while editing OR base64/original
+  const [preview, setPreview] = useState(null); 
   const [imageChanged, setImageChanged] = useState(false);
 
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchTodo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // cleanup blob preview on unmount
   useEffect(() => {
     return () => {
       if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
@@ -165,7 +163,7 @@ export default function EditTodo() {
         title: formData.title,
         description: formData.description,
         status: formData.status,
-        image: finalImage, // base64 string or null (or original string)
+        image: finalImage, 
         updatedAt: new Date().toISOString(),
       };
 
@@ -307,7 +305,6 @@ export default function EditTodo() {
                 )}
               </div>
 
-              {/* ONE input only */}
               <input
                 ref={fileInputRef}
                 type="file"

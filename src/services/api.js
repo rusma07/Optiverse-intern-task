@@ -1,5 +1,3 @@
-// Axios-style mock API using localStorage
-
 const STORAGE_KEY = "todos";
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
