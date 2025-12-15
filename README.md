@@ -1,16 +1,48 @@
-# React + Vite
+# Todo Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, fully-featured Todo web application built with React + Vite that allows users to create, manage, and organize their tasks with image upload capabilities.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- [x] **Create Todos** with title, description, status, and image upload
+- [x] **View Todo List** in a beautiful card layout 
+- [x] **Edit Todos** - Update any todo field including replacing images
+- [x] **Delete Tools** with confirmation dialog
+- [x] **Toggle Status** - Mark todos as pending/completed
+- [x] **Image Upload & Preview** - Upload and preview images before saving
+- [x] **Responsive Design** - Works on desktop, tablet, and mobile
+- [x] **Local Storage** - Data persists across browser sessions
+- [x] **Modern UI** - Clean, professional interface with smooth animations
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Tech Stack
+- **React 18** - Frontend library
 
-## React Compiler
+- **Vite** - Build tool and dev server
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React Router DOM** - Client-side routing
+- **Tailwind CSS** - Utility-first CSS framework
 
-## Expanding the ESLint configuration
+- **Lucide React** - Beautiful icons
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **LocalStorage** - Data persistence
+
+## 🛠️ **Installation & Setup**
+
+### **Prerequisites**
+- Node.js 18+ 
+- npm, yarn, or pnpm
+
+### **Quick Start**
+```bash
+# 1. Clone the repository
+git clone https://github.com/rusma07/Optiverse-intern-task.git
+cd Optiverse-intern-task
+
+# 2. Install dependencies
+npm install
+# or
+yarn install
+
+# 3. Start development server
+npm run dev
+# or
+yarn dev
