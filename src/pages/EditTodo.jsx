@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Save,
   Upload,
-  Image as ImageIcon,
   CheckCircle,
   Clock,
   AlertCircle,
@@ -16,22 +15,35 @@ import api from "../services/api";
 export default function EditTodo() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [todo, setTodo] = useState(null);
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     status: "pending",
-    image: null,
+    image: null, // can be base64 string, or File while editing
   });
-  const [preview, setPreview] = useState(null);
+
+  const [preview, setPreview] = useState(null); // blob url while editing OR base64/original
   const [imageChanged, setImageChanged] = useState(false);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchTodo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // cleanup blob preview on unmount
+  useEffect(() => {
+    return () => {
+      if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   const fetchTodo = async () => {
     setLoading(true);
@@ -49,11 +61,13 @@ export default function EditTodo() {
         title: found.title,
         description: found.description || "",
         status: found.status,
-        image: found.image,
+        image: found.image || null,
       });
-      setPreview(found.image);
-    } catch (error) {
-      console.error("Error fetching todo:", error);
+      setPreview(found.image || null);
+      setImageChanged(false);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching todo:", err);
       setError("Failed to load todo. Please try again.");
     } finally {
       setLoading(false);
@@ -62,10 +76,7 @@ export default function EditTodo() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const toggleStatus = () => {
@@ -76,20 +87,21 @@ export default function EditTodo() {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       setError("Please select an image file");
       return;
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setError("Image size should be less than 5MB");
       return;
     }
+
+    // cleanup old blob preview
+    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
 
     const newPreview = URL.createObjectURL(file);
     setPreview(newPreview);
@@ -99,16 +111,25 @@ export default function EditTodo() {
   };
 
   const removeImage = () => {
+    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+
     setPreview(null);
     setFormData((prev) => ({ ...prev, image: null }));
     setImageChanged(true);
-    document.getElementById("image-upload").value = "";
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const restoreOriginalImage = () => {
-    setPreview(todo.image);
-    setFormData((prev) => ({ ...prev, image: todo.image }));
+    if (!todo) return;
+
+    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+
+    setPreview(todo.image || null);
+    setFormData((prev) => ({ ...prev, image: todo.image || null }));
     setImageChanged(false);
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const validateForm = () => {
@@ -121,7 +142,6 @@ export default function EditTodo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     setSaving(true);
@@ -131,10 +151,11 @@ export default function EditTodo() {
       let finalImage = formData.image;
 
       // If a new file was selected, convert to base64
-      if (imageChanged && formData.image && formData.image instanceof File) {
-        finalImage = await new Promise((resolve) => {
+      if (imageChanged && formData.image instanceof File) {
+        finalImage = await new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onloadend = () => resolve(`/api/todos/${Date.now()}/image`);
+          reader.onload = () => resolve(reader.result); // base64 data URL
+          reader.onerror = reject;
           reader.readAsDataURL(formData.image);
         });
       }
@@ -144,32 +165,29 @@ export default function EditTodo() {
         title: formData.title,
         description: formData.description,
         status: formData.status,
-        image: finalImage,
+        image: finalImage, // base64 string or null (or original string)
         updatedAt: new Date().toISOString(),
       };
 
       await api.put(updatedTodo);
       navigate("/todos");
-    } catch (error) {
-      console.error("Error updating todo:", error);
+    } catch (err) {
+      console.error("Error updating todo:", err);
       setError("Failed to update todo. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
-  // Loading skeleton
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
         <div className="max-w-lg mx-auto">
-          {/* Header Skeleton */}
           <div className="mb-8 animate-pulse">
             <div className="h-6 w-32 bg-gray-300 rounded mb-6"></div>
             <div className="h-10 w-48 bg-gray-300 rounded-lg mb-2"></div>
           </div>
 
-          {/* Form Skeleton */}
           <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="space-y-3">
@@ -187,7 +205,6 @@ export default function EditTodo() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-lg mx-auto">
-        {/* Header */}
         <div className="flex items-center mb-8">
           <button
             onClick={() => navigate("/todos")}
@@ -201,7 +218,6 @@ export default function EditTodo() {
           </h1>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
@@ -211,7 +227,6 @@ export default function EditTodo() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Title <span className="text-red-500">*</span>
@@ -226,7 +241,6 @@ export default function EditTodo() {
               />
             </div>
 
-            {/* Description Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Description
@@ -242,7 +256,6 @@ export default function EditTodo() {
               />
             </div>
 
-            {/* Status Toggle */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
@@ -277,7 +290,6 @@ export default function EditTodo() {
               </div>
             </div>
 
-            {/* Image Upload */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-sm font-medium text-gray-700">
@@ -295,17 +307,21 @@ export default function EditTodo() {
                 )}
               </div>
 
-              {/* Image Upload Area */}
+              {/* ONE input only */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+                disabled={saving}
+              />
+
               {!preview ? (
-                <div className="relative border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-indigo-400 transition-colors">
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    disabled={saving}
-                  />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-indigo-400 transition-colors cursor-pointer"
+                >
                   <Upload className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                   <p className="text-gray-600 font-medium mb-2">
                     Click to upload new image
@@ -333,9 +349,7 @@ export default function EditTodo() {
                       </button>
                       <button
                         type="button"
-                        onClick={() =>
-                          document.getElementById("image-upload").click()
-                        }
+                        onClick={() => fileInputRef.current?.click()}
                         className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition-colors"
                       >
                         Change
@@ -349,26 +363,6 @@ export default function EditTodo() {
               )}
             </div>
 
-            {/* Last Updated Info */}
-            <div className="pt-6 border-t border-gray-100">
-              <div className="text-sm text-gray-600 space-y-1">
-                {todo.createdAt && (
-                  <p>
-                    Created: {new Date(todo.createdAt).toLocaleDateString()}{" "}
-                    {new Date(todo.createdAt).toLocaleTimeString()}
-                  </p>
-                )}
-                {todo.updatedAt && todo.updatedAt !== todo.createdAt && (
-                  <p>
-                    Last updated:{" "}
-                    {new Date(todo.updatedAt).toLocaleDateString()}{" "}
-                    {new Date(todo.updatedAt).toLocaleTimeString()}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
             <div className="flex gap-4 pt-6 border-t border-gray-100">
               <button
                 type="button"
@@ -404,7 +398,6 @@ export default function EditTodo() {
           </form>
         </div>
 
-        {/* Design Element */}
         <div className="mt-8 text-center">
           <div className="inline-flex items-center gap-2 text-gray-500 text-sm">
             <CheckCircle className="w-4 h-4" />
